@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://cfywwecd20y7m"]
+
+[ext_resource type="PackedScene" uid="uid://6u4lyakt0jcd" path="res://scenes/Player.tscn" id="1_y70kg"]
+
+[sub_resource type="Environment" id="Environment_c3ier"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_voiaq"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vfblj"]
+albedo_color = Color(0, 0, 1, 1)
+
+[node name="Main" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 57.5278, 0)
+shadow_enabled = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+use_collision = true
+size = Vector3(100, 0.1, 100)
+
+[node name="Player" parent="." instance=ExtResource("1_y70kg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.34063, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_c3ier")
+camera_attributes = SubResource("CameraAttributesPractical_voiaq")
+
+[node name="Box" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.021, 0.5, 23.9)
+use_collision = true
+size = Vector3(4, 1, 4)
+material = SubResource("StandardMaterial3D_vfblj")
+
+[node name="Box" type="CSGBox3D" parent="Box"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.49239, 1, -7.05719e-05)
+use_collision = true
+size = Vector3(4, 1, 4)
+material = SubResource("StandardMaterial3D_vfblj")
