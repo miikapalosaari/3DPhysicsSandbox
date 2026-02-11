@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://6u4lyakt0jcd"]
+[gd_scene load_steps=5 format=3 uid="uid://6u4lyakt0jcd"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_in68i"]
+[ext_resource type="PackedScene" uid="uid://dov0lypo7tv4h" path="res://scenes/crosshair.tscn" id="2_i7dxx"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_uuyyg"]
 
@@ -8,6 +9,7 @@
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_in68i")
+crosshairDotRadius = 4.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 visible = false
@@ -19,3 +21,5 @@ shape = SubResource("CapsuleShape3D_fel7i")
 [node name="Head" type="Node3D" parent="."]
 
 [node name="Camera3D" type="Camera3D" parent="Head"]
+
+[node name="Crosshair" parent="." instance=ExtResource("2_i7dxx")]

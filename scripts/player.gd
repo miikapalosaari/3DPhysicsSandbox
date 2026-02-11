@@ -9,6 +9,7 @@ var isCrouching: bool = false
 var currentSpeed: float = 0.0
 var currentColliderHeight: float
 var currentEyeHeight: float
+var bobTime: float = 0.0
 
 @export var standingHeight: float = 2.0
 @export var crouchingHeight: float = 1.0
@@ -27,18 +28,23 @@ var currentEyeHeight: float
 
 @export var bobFrequency: float = 2.5
 @export var bobAmplitude: float = 0.075
-@export var bobTime: float = 0.0
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var bodyCollider = $BodyCollider
 @onready var bodyCapsule: CapsuleShape3D = bodyCollider.shape
 
+@onready var crosshair: Control = $Crosshair
+@export var crosshairDotColor: Color = Color.WHITE
+@export var crosshairDotRadius: float = 1.0
+
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	currentColliderHeight = standingHeight
 	currentEyeHeight = standingEyeHeight
 	bodyCapsule.height = standingHeight
+	crosshair.setCrosshairDotColor(crosshairDotColor)
+	crosshair.setCrosshairDotRadius(crosshairDotRadius)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
