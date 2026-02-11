@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://dmidixbnrf2uq"]
+
+[ext_resource type="PackedScene" uid="uid://2xmek4pce54b" path="res://scenes/interactionComponent.tscn" id="1_3k72m"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a1brw"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_0wa0u"]
+material = SubResource("StandardMaterial3D_a1brw")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e6qgq"]
+
+[node name="TestCube100kg" type="RigidBody3D"]
+mass = 100.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_0wa0u")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_e6qgq")
+
+[node name="InteractionComponent" parent="." node_paths=PackedStringArray("objectReference") instance=ExtResource("1_3k72m")]
+objectReference = NodePath("..")

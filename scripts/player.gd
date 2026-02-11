@@ -30,7 +30,7 @@ var bobTime: float = 0.0
 @export var bobAmplitude: float = 0.075
 
 @onready var head = $Head
-@onready var camera = $Head/Camera3D
+@onready var camera = $Head/PlayerCamera3D
 @onready var bodyCollider = $BodyCollider
 @onready var bodyCapsule: CapsuleShape3D = bodyCollider.shape
 
