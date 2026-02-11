@@ -4,19 +4,28 @@ const objectMoveSpeed: float = 5.0
 const objectThrowSpeed: float = 5.0
 
 enum InteractionType {
-	DEFAULT
+	DEFAULT,
+	HINGE
 }
 
 @export var objectReference: Node3D
 @export var interactionType: InteractionType = InteractionType.DEFAULT
+@export var maximumRotation: float = 90
+@export var pivotPoint: Node3D
 
 var canInteract: bool = true
 var isInteracting: bool = false
+var lockCamera: bool = false
+var isFront: bool = false
+var startingRotation: float
 
 var playerHand: Marker3D
 
 func _ready() -> void:
-	pass
+	match interactionType:
+		InteractionType.HINGE:
+			startingRotation = pivotPoint.rotation.x
+			maximumRotation = deg_to_rad(rad_to_deg(startingRotation) + maximumRotation)
 
 # Runs once, when player first clicks on an object to interact with
 func preInteract(hand: Marker3D) -> void:
@@ -24,6 +33,8 @@ func preInteract(hand: Marker3D) -> void:
 	match interactionType:
 		InteractionType.DEFAULT:
 			playerHand = hand
+		InteractionType.HINGE:
+			lockCamera = true
 
 # Runs every frame
 func interact() -> void:
@@ -45,9 +56,19 @@ func auxilaryInteract() -> void:
 # Runs once, when the player last interacts with an object
 func postInteract() -> void:
 	isInteracting = false
+	lockCamera = false
 
 func _input(event: InputEvent) -> void:
-	pass
+	if isInteracting:
+		match interactionType:
+			InteractionType.HINGE:
+				if event is InputEventMouseMotion:
+					if isFront:
+						pivotPoint.rotate_y(-event.relative.y * 0.001)
+					else:
+						pivotPoint.rotate_y(event.relative.y * 0.001)
+					
+					pivotPoint.rotation.y = clamp(pivotPoint.rotation.y, startingRotation, maximumRotation)
 
 func defaultInteract() -> void:
 	var objectCurrentPosition: Vector3 = objectReference.global_transform.origin
@@ -72,3 +93,9 @@ func defaultThrow() -> void:
 		canInteract = false
 		await get_tree().create_timer(1.0).timeout
 		canInteract = true
+
+func setDirection(normal: Vector3) -> void:
+	if normal.z > 0:
+		isFront = true
+	else:
+		isFront = false

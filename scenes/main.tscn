@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://cfywwecd20y7m"]
+[gd_scene load_steps=9 format=3 uid="uid://cfywwecd20y7m"]
 
 [ext_resource type="PackedScene" uid="uid://6u4lyakt0jcd" path="res://scenes/Player.tscn" id="1_y70kg"]
 [ext_resource type="PackedScene" uid="uid://ciptertu2ihd3" path="res://objects/TestCube1KG.tscn" id="2_e2xh3"]
 [ext_resource type="PackedScene" uid="uid://bgyfwpdefqjto" path="res://objects/TestCube10KG.tscn" id="3_5rr8w"]
 [ext_resource type="PackedScene" uid="uid://dmidixbnrf2uq" path="res://objects/TestCube100KG.tscn" id="4_v3d1a"]
+[ext_resource type="PackedScene" uid="uid://d0emop6ukpaav" path="res://objects/SimpleDoor.tscn" id="5_t6vj8"]
 
 [sub_resource type="Environment" id="Environment_c3ier"]
 
@@ -56,3 +57,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.69413, 3.18742)
 
 [node name="TestCube100kg" parent="." instance=ExtResource("4_v3d1a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.42974, 2.25628, 0)
+
+[node name="SimpleDoor" parent="." instance=ExtResource("5_t6vj8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.16959, 1.8999e-07, -8.15991)
+
+[node name="SimpleDoor2" parent="." instance=ExtResource("5_t6vj8")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 10.9755, -7.63685e-07, -3.54097)

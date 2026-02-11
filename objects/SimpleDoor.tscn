@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://d0emop6ukpaav"]
+
+[ext_resource type="PackedScene" uid="uid://2xmek4pce54b" path="res://scenes/interactionComponent.tscn" id="1_oqex5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pi7cm"]
+albedo_color = Color(0.214774, 0.157885, 0.0826842, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_xa3ec"]
+material = SubResource("StandardMaterial3D_pi7cm")
+size = Vector3(2, 3, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ynqn7"]
+size = Vector3(2, 3, 0.1)
+
+[node name="SimpleDoor" type="Node3D"]
+
+[node name="PivotPoint" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="Door" type="StaticBody3D" parent="PivotPoint"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PivotPoint/Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.5, 0)
+mesh = SubResource("BoxMesh_xa3ec")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PivotPoint/Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.5, 0)
+shape = SubResource("BoxShape3D_ynqn7")
+
+[node name="InteractionComponent" parent="PivotPoint/Door" node_paths=PackedStringArray("objectReference", "pivotPoint") instance=ExtResource("1_oqex5")]
+objectReference = NodePath("..")
+interactionType = 1
+pivotPoint = NodePath("../..")

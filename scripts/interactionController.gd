@@ -20,12 +20,10 @@ func _process(delta: float) -> void:
 				interactionComponent.auxilaryInteract()
 				currentObject = null
 		elif Input.is_action_pressed("primary"):
-			print("still picking")
 			if interactionComponent:
 				interactionComponent.interact()
 		else:
 			if interactionComponent:
-				print("not picking")
 				interactionComponent.postInteract()
 				currentObject = null
 	# If not interacting with something, lets see if its now possible.
@@ -36,12 +34,19 @@ func _process(delta: float) -> void:
 			interactionComponent = potentialObject.get_node_or_null("InteractionComponent")
 			if interactionComponent:
 				if interactionComponent.canInteract == false:
-					print("cant interact")
 					return
 					
 				lastPotentialObject = currentObject
 				
 				if Input.is_action_pressed("primary"):
-					print("clicking object initial")
 					currentObject = potentialObject
 					interactionComponent.preInteract(hand)
+					
+					if interactionComponent.interactionType == interactionComponent.InteractionType.HINGE:
+						interactionComponent.setDirection(currentObject.to_local(interactionRaycast.get_collision_point()))
+
+func isCameraLocked() -> bool:
+	if interactionComponent:
+		if interactionComponent.lockCamera and interactionComponent.isInteracting:
+			return true
+	return false

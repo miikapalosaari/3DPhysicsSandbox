@@ -37,6 +37,7 @@ var bobTime: float = 0.0
 @onready var crosshair: Control = $Crosshair
 @export var crosshairDotColor: Color = Color.WHITE
 @export var crosshairDotRadius: float = 1.0
+@onready var interactionController = %InteractionController
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -48,9 +49,10 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		head.rotate_y(-event.relative.x * sensitivity * yaw)
-		camera.rotate_x(-event.relative.y * sensitivity * yaw)
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90));
+		if not interactionController.isCameraLocked():
+			head.rotate_y(-event.relative.x * sensitivity * yaw)
+			camera.rotate_x(-event.relative.y * sensitivity * yaw)
+			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90));
 
 func headbob(time) -> Vector3:
 	var pos: Vector3 = Vector3.ZERO
