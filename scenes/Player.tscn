@@ -26,11 +26,12 @@ unique_name_in_owner = true
 
 [node name="InteractionRaycast" type="RayCast3D" parent="Head/PlayerCamera3D"]
 unique_name_in_owner = true
-target_position = Vector3(0, 0, -2)
+target_position = Vector3(0, 0, -3)
+collision_mask = 7
 
 [node name="Hand" type="Marker3D" parent="Head/PlayerCamera3D"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 
 [node name="Crosshair" parent="." instance=ExtResource("2_i7dxx")]
 

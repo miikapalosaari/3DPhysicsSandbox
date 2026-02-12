@@ -40,7 +40,7 @@ func _process(delta: float) -> void:
 				
 				if Input.is_action_pressed("primary"):
 					currentObject = potentialObject
-					interactionComponent.preInteract(hand)
+					interactionComponent.preInteract(hand, playerCamera)
 					
 					if interactionComponent.interactionType == interactionComponent.InteractionType.HINGE:
 						interactionComponent.setDirection(currentObject.to_local(interactionRaycast.get_collision_point()))
