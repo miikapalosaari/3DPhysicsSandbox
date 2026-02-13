@@ -5,9 +5,9 @@ extends Node
 @onready var playerCamera = %PlayerCamera3D
 @onready var hand = %Hand
 
-var currentObject: Object
-var lastPotentialObject: Object
-var interactionComponent: Node
+var currentObject: Object = null
+var lastPotentialObject: Object = null
+var interactionComponent: Node = null
 
 func _ready():
 	print("Interaction script attached")
@@ -18,32 +18,36 @@ func _process(delta: float) -> void:
 		if Input.is_action_just_pressed("secondary"):
 			if interactionComponent:
 				interactionComponent.auxilaryInteract()
-				currentObject = null
-		elif Input.is_action_pressed("primary"):
+				return
+		if Input.is_action_pressed("primary"):
 			if interactionComponent:
 				interactionComponent.interact()
-		else:
-			if interactionComponent:
-				interactionComponent.postInteract()
-				currentObject = null
+				return
+			
+			interactionComponent.postInteract()
+			return
+			
 	# If not interacting with something, lets see if its now possible.
-	else:
-		var potentialObject: Object = interactionRaycast.get_collider()
-		
-		if potentialObject and potentialObject is Node:
-			interactionComponent = potentialObject.get_node_or_null("InteractionComponent")
-			if interactionComponent:
-				if interactionComponent.canInteract == false:
-					return
-					
-				lastPotentialObject = currentObject
+	var potentialObject: Object = interactionRaycast.get_collider()
+	if potentialObject and potentialObject is Node:
+		var component = potentialObject.get_node_or_null("InteractionComponent")
+		if component and component.canInteract:
+			if Input.is_action_pressed("primary"):
+				currentObject = potentialObject
+				interactionComponent = component
 				
-				if Input.is_action_pressed("primary"):
-					currentObject = potentialObject
-					interactionComponent.preInteract(hand, playerCamera)
-					
-					if interactionComponent.interactionType == interactionComponent.InteractionType.HINGE:
-						interactionComponent.setDirection(currentObject.to_local(interactionRaycast.get_collision_point()))
+				component.interactionEnded.connect(onInteractionEnded)
+				component.preInteract(hand, playerCamera)
+				
+				if component.interactionType == component.InteractionType.HINGE:
+					component.setDirection(currentObject.to_local(interactionRaycast.get_collision_point()))
+
+func onInteractionEnded():
+	if interactionComponent:
+		interactionComponent.interactionEnded.disconnect(onInteractionEnded)
+
+	currentObject = null
+	interactionComponent = null
 
 func isCameraLocked() -> bool:
 	if interactionComponent:

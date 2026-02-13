@@ -2,8 +2,7 @@ extends Node
 
 const objectMoveSpeed: float = 5.0
 const objectThrowSpeed: float = 5.0
-const PLAYER_LAYER: int = 2
-const INTERACTABLE_LAYER: int = 3
+signal interactionEnded
 
 enum InteractionType {
 	DEFAULT,
@@ -74,6 +73,7 @@ func postInteract() -> void:
 	if rigidBody3D:
 		rigidBody3D.sleeping = false
 		rigidBody3D.apply_impulse(Vector3.DOWN * 0.1)
+	emit_signal("interactionEnded")
 
 func _input(event: InputEvent) -> void:
 	if isInteracting:
@@ -132,6 +132,7 @@ func defaultThrow() -> void:
 		canInteract = false
 		await get_tree().create_timer(1.0).timeout
 		canInteract = true
+	postInteract()
 
 func setDirection(normal: Vector3) -> void:
 	if normal.z > 0:
