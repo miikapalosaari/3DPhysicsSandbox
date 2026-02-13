@@ -24,8 +24,8 @@ func _process(delta: float) -> void:
 				interactionComponent.interact()
 				return
 			
-			interactionComponent.postInteract()
-			return
+		interactionComponent.postInteract()
+		return
 			
 	# If not interacting with something, lets see if its now possible.
 	var potentialObject: Object = interactionRaycast.get_collider()

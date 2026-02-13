@@ -26,6 +26,9 @@ var maxDistance: float = 3.0
 var targetGrabDistance: float = 0.0
 var scrollLerpSpeed: float = 8.0
 
+var initialRotation: Basis
+var initialOffset: Vector3
+
 var playerHand: Marker3D
 var playerCamera: Camera3D
 
@@ -41,6 +44,15 @@ func preInteract(hand: Marker3D, camera: Camera3D) -> void:
 	playerHand = hand
 	playerCamera = camera
 	
+	var rigidBody3D: RigidBody3D = objectReference as RigidBody3D
+	if rigidBody3D:
+		rigidBody3D.linear_velocity = Vector3.ZERO
+		rigidBody3D.angular_velocity = Vector3.ZERO
+		rigidBody3D.sleeping = false
+	
+	initialRotation = objectReference.global_transform.basis
+	initialOffset = objectReference.global_transform.origin - playerHand.global_transform.origin
+	
 	grabDistance = playerCamera.global_transform.origin.distance_to(objectReference.global_transform.origin)
 	targetGrabDistance = grabDistance
 	
@@ -50,7 +62,7 @@ func preInteract(hand: Marker3D, camera: Camera3D) -> void:
 
 # Runs every frame
 func interact() -> void:
-	if not canInteract:
+	if not canInteract or not isInteracting:
 		return
 		
 	match interactionType:
@@ -71,8 +83,10 @@ func postInteract() -> void:
 	lockCamera = false
 	var rigidBody3D: RigidBody3D = objectReference as RigidBody3D
 	if rigidBody3D:
+		rigidBody3D.angular_velocity = Vector3.ZERO
 		rigidBody3D.sleeping = false
 		rigidBody3D.apply_impulse(Vector3.DOWN * 0.1)
+		rigidBody3D.angular_damp = 0.0
 	emit_signal("interactionEnded")
 
 func _input(event: InputEvent) -> void:
@@ -102,6 +116,8 @@ func defaultInteract() -> void:
 	var rigidBody3D: RigidBody3D = objectReference as RigidBody3D
 	if not rigidBody3D:
 		return
+		
+	rigidBody3D.angular_damp = 5.0
 	
 	grabDistance = lerp(grabDistance, targetGrabDistance, scrollLerpSpeed * get_process_delta_time())
 	var targetPosition: Vector3 = playerCamera.global_transform.origin + playerCamera.global_transform.basis.z * -grabDistance
@@ -118,6 +134,27 @@ func defaultInteract() -> void:
 
 	rigidBody3D.apply_central_force(force)
 	rigidBody3D.sleeping = false
+	var isColliding: bool = rigidBody3D.get_contact_count() > 0
+	if not isColliding:
+		# Smoothly restore rotation
+		var currentBasis = rigidBody3D.global_transform.basis
+		var targetBasis = initialRotation
+
+		# Rotation difference
+		var qCurrent = currentBasis.get_rotation_quaternion()
+		var qTarget = targetBasis.get_rotation_quaternion()
+		var qDelta = qCurrent.inverse() * qTarget
+
+		var axis = qDelta.get_axis()
+		var angle = qDelta.get_angle()
+
+		var mass = rigidBody3D.mass
+		var kp = 8.0 / mass
+		var kd = 1.5 / mass
+
+		var torque = axis * angle * kp - rigidBody3D.angular_velocity * kd
+		rigidBody3D.apply_torque(torque)
+
 
 func defaultThrow() -> void:
 	var objectCurrentPosition: Vector3 = objectReference.global_transform.origin
