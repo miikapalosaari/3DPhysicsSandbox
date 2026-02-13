@@ -32,7 +32,7 @@ func _process(delta: float) -> void:
 	if potentialObject and potentialObject is Node:
 		var component = potentialObject.get_node_or_null("InteractionComponent")
 		if component and component.canInteract:
-			if Input.is_action_pressed("primary"):
+			if Input.is_action_just_pressed("primary"):
 				currentObject = potentialObject
 				interactionComponent = component
 				
